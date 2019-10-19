@@ -21,10 +21,10 @@ def capFrame(n):
         if (float(curr_time - initial_time) > 1/n):
 
             # Our operations on the frame come here
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
             # Write the frame
-            cv2.imwrite("frame%d.jpg" % i, gray)
+            cv2.imwrite("frame%d.jpg" % i, frame)
             initial_time = time.time()
             i += 1
 

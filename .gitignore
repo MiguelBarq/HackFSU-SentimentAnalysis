@@ -10,3 +10,4 @@ Assets/AssetStoreTools*
 
 # To ignore
 *.jpg
+__pycache__
