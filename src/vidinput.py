@@ -31,5 +31,3 @@ def capFrame(n):
     # When everything done, release the capture
     cap.release()
     cv2.destroyAllWindows()
-
-capFrame(3)
