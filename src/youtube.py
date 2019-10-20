@@ -17,4 +17,6 @@ def getURL(searchQuery: str, searchResults:int = 1) -> str:
 
     searches = yt.search(q=searchQuery, max_results=searchResults, video_duration="short")
     rNum = random.randint(0,searchResults-1)
-    return ["https://www.youtube.com/watch?v=" + searches[rNum]["video_id"], searches[rNum]["video_title"], searches[rNum]["video_thumbnail"]]
+    # returns [url to video, video title, url to thumbnail]
+    return ["https://www.youtube.com/watch?v=" + searches[rNum]["video_id"],
+    searches[rNum]["video_title"], searches[rNum]["video_thumbnail"]]

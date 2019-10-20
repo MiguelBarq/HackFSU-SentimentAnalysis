@@ -3,7 +3,6 @@ from collections import Counter
 from pathlib import Path
 import numpy as np
 import face_recognition
-from keras.models import load_model
 from keras.preprocessing.image import img_to_array
 import cv2
 
