@@ -1,14 +1,11 @@
 import vidinput as vid
-from statistics import mode
+from collections import Counter
 from pathlib import Path
 import numpy as np
 import face_recognition
 from keras.models import load_model
 from keras.preprocessing.image import img_to_array
 import cv2
-
-# Globally loading the model for optimization purposes
-model = load_model("../data/simple_CNN.985-0.66.hdf5")
 
 """
 Input: List of image file names
@@ -51,7 +48,7 @@ def cleanUp():
     for p in Path(".").glob("*.gif"):
         p.unlink()
 
-def analysis(image_name):
+def analysis(image_name, model):
     emotion_dict = {
         'Angry': 0,
         'Disgust': 1,
@@ -94,18 +91,17 @@ Output: Emotion analysis over fps number of photos take in one second
 Note: This is meant to be run in a for-loop, with each iteration representing
       how often you run analysis
 """
-def sentAnalysis(fps):
+def sentAnalysis(fps, model):
     # Holds the sentiment analysis results per image
     analysis_list = []
     image_names = trim(vid.capFrame(fps))
     if len(image_names) == 0:
-        return "No faces recognized"
+        return "Neutral"
 
     #else
     for i in image_names:
-        analysis_list.append(analysis(i))
+        analysis_list.append(analysis(i, model))
 
     cleanUp()
-    return mode(analysis_list)
-
-print(sentAnalysis(30))
+    c = Counter(analysis_list)
+    return c.most_common(1)[0][0]
