@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import face_recognition
 from keras.models import load_model
+from keras.preprocessing.image import img_to_array
 import cv2
 
 # Globally loading the model for optimization purposes
@@ -66,17 +67,23 @@ def analysis(image_name):
     # plt.imshow(face_image)
     # plt.show()
 
-    # Lowering resolution for computer vision
-    face_image = cv2.resize(face_image, (48,48))
-
-    # "Grayscale" they said...
+    # Lowering resolution for computer vision & grayscale
     face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+    face_image = cv2.resize(face_image, (48,48))
+    cv2.imwrite('test.jpg', face_image)
 
     # Reformatting
-    face_image = np.reshape(face_image, [1, face_image.shape[0], face_image.shape[1], 1])
-    predicted_class = np.argmax(model.predict(face_image))
+    # face_image = np.reshape(face_image, [1, face_image.shape[1], face_image.shape[1], 1])
+    face_image = face_image.astype("float") / 255.0
+    face_image = img_to_array(face_image)
+    face_image = np.expand_dims(face_image, axis=0)
+
+    # print(model.predict(face_image))
+
+    predicted_class = np.argmax(model.predict(face_image)[0])
+
+    print("Predicted_class:", predicted_class)
     label_map = dict((v,k) for k,v in emotion_dict.items())
-    print(predicted_class)
     predicted_label = label_map[predicted_class]
 
     return predicted_label
@@ -101,4 +108,4 @@ def sentAnalysis(fps):
     cleanUp()
     return mode(analysis_list)
 
-print(sentAnalysis(0))
+print(sentAnalysis(30))
