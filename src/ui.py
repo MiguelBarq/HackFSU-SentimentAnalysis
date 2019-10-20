@@ -12,21 +12,16 @@ def createUI(searchQuery:str):
     ui.geometry("300x120")
     ui.wm_title("HackFSU - Music Player")
 
-    elements = createElements(ui)
+    elements = createElements(ui, searchQuery)
 
     ui.mainloop()
 
-def createElements(ui) -> list:
+def createElements(ui, searchQuery:str) -> list:
     outList = []
 
     # bulding player to stream music on pc
     try:
-        # url = youtube.getURL("happy music")
-        # print(url)
-        video = pafy.new("https://www.youtube.com/watch?v=BAGkYLoVFLM")
-        aStream = video.getbestaudio()
-        playurl = aStream.url
-        player = vlc.MediaPlayer(playurl)
+        player = setSong(searchQuery)
     except:
         print("[WARNING] We were not able to retrieve a viable audio stream at this time from Youtube.")
 
@@ -48,7 +43,7 @@ def createElements(ui) -> list:
 
     return outList
 
-def setSong(searchQuery:str):
+def setSong(searchQuery:str) -> player:
     print("setSong attempting to search for: " + searchQuery)
 
     # bulding player to stream music on pc
@@ -59,12 +54,13 @@ def setSong(searchQuery:str):
         aStream = video.getbestaudio()
         playurl = aStream.url
         player = vlc.MediaPlayer(playurl)
-        loopyboi(player)
+        return player
     except:
         print("[WARNING] We were not able to retrieve a viable audio stream at this time from Youtube.")
 
 def playButton(player):
     player.play()
+    loopyboi(player)
 
 def pauseButton(player):
     player.pause()
@@ -74,6 +70,8 @@ def stopButton(player):
 
 # For you to place where needed
 def loopyboi(player):
+    time.sleep(1.5)
+
     # Holds the sentiment analysis for throughout the song
     song_sent = []
     # Tells when near end of song. TODO
@@ -84,7 +82,7 @@ def loopyboi(player):
     song_start_time = time.time()
     # song_sent.append(sentAnalysis.sentAnalysis(3))
     while True:
-        print("tragicboi")
+        print(time.time() - song_start_time + " : " + player.get_length())
 
         if end_of_song:
             print("YEET ME OUT OF THIS LOOP")
@@ -103,6 +101,10 @@ def loopyboi(player):
             # song_sent.append(sentAnalysis.sentAnalysis(3))
             # Updating start_time
             start_time = time.time()
+
+        time.sleep(1)
+
+
 
     return song_sent
 
