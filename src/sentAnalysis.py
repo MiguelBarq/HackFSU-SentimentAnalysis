@@ -1,25 +1,26 @@
 import vidinput as vid
-import os
-import time
+from statistics import mode
 from pathlib import Path
-from PIL import Image
-from matplotlib import pyplot as plt
 import numpy as np
 import face_recognition
-import keras
 from keras.models import load_model
 import cv2
 
+# Globally loading the model for optimization purposes
+model = load_model("../data/simple_CNN.985-0.66.hdf5")
 
 """
 Input: List of image file names
 Output: List of image files names, but with images trimmed to only faces
 """
 def trim(image_names):
-    for i in image_names:
+    for i in image_names[::-1]:
         temp = face_recognition.load_image_file(i)
-        top, right, bottom, left = face_recognition.face_locations(temp)[0]
-        cv2.imwrite(i, temp[top:bottom, left:right])
+        try:
+            top, right, bottom, left = face_recognition.face_locations(temp)[0]
+            cv2.imwrite(i, temp[top:bottom, left:right])
+        except:
+            image_names.remove(i)
     return image_names
 
 """
@@ -49,7 +50,7 @@ def cleanUp():
     for p in Path(".").glob("*.gif"):
         p.unlink()
 
-def analysis(image_names):
+def analysis(image_name):
     emotion_dict = {
         'Angry': 0,
         'Disgust': 1,
@@ -61,37 +62,43 @@ def analysis(image_names):
     }
 
     # Loading in jpg
-    face_image = cv2.imread(image_names[0])
-    plt.imshow(face_image)
-    plt.show()
+    face_image = cv2.imread(image_name)
+    # plt.imshow(face_image)
+    # plt.show()
 
     # Lowering resolution for computer vision
     face_image = cv2.resize(face_image, (48,48))
 
     # "Grayscale" they said...
     face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
-    cv2.imwrite('test.jpg', face_image)
 
     # Reformatting
     face_image = np.reshape(face_image, [1, face_image.shape[0], face_image.shape[1], 1])
-    model = load_model("../data/model_v6_23.hdf5")
     predicted_class = np.argmax(model.predict(face_image))
     label_map = dict((v,k) for k,v in emotion_dict.items())
+    print(predicted_class)
     predicted_label = label_map[predicted_class]
 
     return predicted_label
 
-def main():
-    image_names = trim(vid.capFrame(1))
-    print(analysis(image_names))
-    # cleanUp()
+"""
+Input: FPS
+Output: Emotion analysis over fps number of photos take in one second
+Note: This is meant to be run in a for-loop, with each iteration representing
+      how often you run analysis
+"""
+def sentAnalysis(fps):
+    # Holds the sentiment analysis results per image
+    analysis_list = []
+    image_names = trim(vid.capFrame(fps))
+    if len(image_names) == 0:
+        return "No faces recognized"
 
+    #else
+    for i in image_names:
+        analysis_list.append(analysis(i))
 
+    cleanUp()
+    return mode(analysis_list)
 
-
-
-
-
-
-
-main()
+print(sentAnalysis(0))
