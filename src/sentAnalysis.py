@@ -60,10 +60,20 @@ def analysis(image_names):
         'Surprise': 6
     }
 
+    # Loading in jpg
     face_image = cv2.imread(image_names[0])
     plt.imshow(face_image)
     plt.show()
-    print(face_image.shape)
+
+    # Lowering resolution for computer vision
+    face_image = cv2.resize(face_image, (48,48))
+    plt.imshow(face_image)
+    plt.show()
+
+    # Color conversion
+    face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+    plt.imshow(face_image)
+    plt.show()
 
     return
 
