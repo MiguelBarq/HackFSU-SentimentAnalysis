@@ -16,4 +16,5 @@ def getURL(searchQuery: str, searchResults:int = 1) -> str:
     yt = YouTubeDataAPI(api_key)
 
     searches = yt.search(q=searchQuery, max_results=searchResults, video_duration="short")
-    return "https://www.youtube.com/watch?v=" + searches[random.randint(0,searchResults-1)]["video_id"]
+    rNum = random.randint(0,searchResults-1)
+    return ["https://www.youtube.com/watch?v=" + searches[rNum]["video_id"], searches[rNum]["video_title"], searches[rNum]["video_thumbnail"]]

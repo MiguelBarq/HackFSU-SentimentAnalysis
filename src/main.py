@@ -17,14 +17,15 @@ query_dict = {
     'edm' : 1,
     'country': 1
 }
+uiElements = []
 
 def createUI(searchQuery:str):
     ui = tk.Tk()
     ui.geometry("300x120")
     ui.wm_title("HackFSU - Music Player")
 
-    elements = createElements(ui, searchQuery)
-    print(elements)
+    global uiElements
+    uiElements = createElements(ui, searchQuery)
 
     ui.mainloop()
 
@@ -60,8 +61,18 @@ def setSong(searchQuery:str):
 
     # bulding player to stream music on pc
     try:
-        url = youtube.getURL(searchQuery, 10)
+        dataList = youtube.getURL(searchQuery, 10)
+        url = dataList[0]
+        title = dataList[1]
+        thumbnail = dataList[2]
+
         print(url)
+        print(title)
+        print(thumbnail)
+
+        global uiElements
+        uiElements[0].config(text=title)
+
         video = pafy.new(url)
         aStream = video.getbestaudio()
         playurl = aStream.url
