@@ -12,3 +12,4 @@ Assets/AssetStoreTools*
 *.jpg
 __pycache__
 test.py
+api.json
