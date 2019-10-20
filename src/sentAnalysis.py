@@ -50,12 +50,28 @@ def cleanUp():
         p.unlink()
 
 def analysis(image_names):
+    emotion_dict = {
+        'Angry': 0,
+        'Disgust': 1,
+        'Fear': 2,
+        'Happy': 3,
+        'Neutral': 4,
+        'Sad': 5,
+        'Surprise': 6
+    }
+
+    face_image = cv2.imread(image_names[0])
+    plt.imshow(face_image)
+    plt.show()
+    print(face_image.shape)
+
     return
 
 def main():
     image_names = trim(vid.capFrame(2))
-    print(sameFace(image_names))
+    analysis(image_names)
     cleanUp()
+
 
 
 
