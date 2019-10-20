@@ -1,10 +1,9 @@
 import tkinter as tk
-import webbrowser
 # import youtube
 import pafy
 import vlc
 import time
-import sentAnalysis
+# import sentAnalysis
 
 player = []
 
@@ -13,12 +12,23 @@ def createUI(searchQuery:str):
     ui.geometry("300x120")
     ui.wm_title("HackFSU - Music Player")
 
-    elements = createElements(ui, searchQuery)
+    elements = createElements(ui)
 
     ui.mainloop()
 
-def createElements(ui, searchQuery:str) -> list:
+def createElements(ui) -> list:
     outList = []
+
+    # bulding player to stream music on pc
+    try:
+        # url = youtube.getURL("happy music")
+        # print(url)
+        video = pafy.new("https://www.youtube.com/watch?v=BAGkYLoVFLM")
+        aStream = video.getbestaudio()
+        playurl = aStream.url
+        player = vlc.MediaPlayer(playurl)
+    except:
+        print("[WARNING] We were not able to retrieve a viable audio stream at this time from Youtube.")
 
     title = tk.Label(ui, text="Title, bruvh")
     title.pack(side="top")
@@ -32,7 +42,7 @@ def createElements(ui, searchQuery:str) -> list:
     pause.pack(side="bottom", fill="x")
     outList.append(pause)
 
-    button = tk.Button(text="play the video", command=lambda: playButton(player, searchQuery))
+    button = tk.Button(text="play the video", command=lambda: playButton(player))
     button.pack(side="bottom", fill="x")
     outList.append(button)
 
@@ -53,8 +63,7 @@ def setSong(searchQuery:str):
     except:
         print("[WARNING] We were not able to retrieve a viable audio stream at this time from Youtube.")
 
-def playButton(player, searchQuery:str):
-    setSong(searchQuery)
+def playButton(player):
     player.play()
 
 def pauseButton(player):
@@ -73,9 +82,12 @@ def loopyboi(player):
     # This loop will call sentiment analysis at 3fps once every 2 seconds
     start_time = time.time()
     song_start_time = time.time()
-    song_sent.append(sentAnalysis.sentAnalysis(3))
+    # song_sent.append(sentAnalysis.sentAnalysis(3))
     while True:
+        print("tragicboi")
+
         if end_of_song:
+            print("YEET ME OUT OF THIS LOOP")
             break
         
         # Updating time
@@ -88,11 +100,10 @@ def loopyboi(player):
         # If two seconds have elapsed
         if (float(curr_time - start_time) >= 2):
             # Getting another sentiment analysis
-            song_sent.append(sentAnalysis.sentAnalysis(3))
+            # song_sent.append(sentAnalysis.sentAnalysis(3))
             # Updating start_time
             start_time = time.time()
 
     return song_sent
 
-
-    
+createUI("fuck you")    
