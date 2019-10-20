@@ -67,20 +67,24 @@ def analysis(image_names):
 
     # Lowering resolution for computer vision
     face_image = cv2.resize(face_image, (48,48))
-    plt.imshow(face_image)
-    plt.show()
 
-    # Color conversion
+    # "Grayscale" they said...
     face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
-    plt.imshow(face_image)
-    plt.show()
+    cv2.imwrite('test.jpg', face_image)
 
-    return
+    # Reformatting
+    face_image = np.reshape(face_image, [1, face_image.shape[0], face_image.shape[1], 1])
+    model = load_model("../data/model_v6_23.hdf5")
+    predicted_class = np.argmax(model.predict(face_image))
+    label_map = dict((v,k) for k,v in emotion_dict.items())
+    predicted_label = label_map[predicted_class]
+
+    return predicted_label
 
 def main():
-    image_names = trim(vid.capFrame(2))
-    analysis(image_names)
-    cleanUp()
+    image_names = trim(vid.capFrame(1))
+    print(analysis(image_names))
+    # cleanUp()
 
 
 
