@@ -9,6 +9,8 @@ import face_recognition
 import keras
 from keras.models import load_model
 import cv2
+
+
 """
 Input: List of image file names
 Output: List of image files names, but with images trimmed to only faces
