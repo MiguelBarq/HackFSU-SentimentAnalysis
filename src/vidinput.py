@@ -1,6 +1,5 @@
 import time
 import cv2
-
 """
 Creates n jpgs over a second from webcam feed
 """
@@ -8,11 +7,13 @@ def capFrame(n):
     cap = cv2.VideoCapture(0)
     initial_time = time.time()
     i = 0
+    # raw images will be trimmed in sentAnalysis.py
+    images = []
 
     while True:
         # Resetting i to force a max of 10 files
         if i == n:
-            return
+            return images
 
         # Capture frame-by-frame
         succ, frame = cap.read()
@@ -25,6 +26,8 @@ def capFrame(n):
 
             # Write the frame
             cv2.imwrite("frame%d.jpg" % i, frame)
+            # Add filename to image list
+            images.append("frame%d.jpg" % i)
             initial_time = time.time()
             i += 1
 
